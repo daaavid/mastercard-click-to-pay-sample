@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Mastercard Click to Pay Sample</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/bamboo.css/dist/light.min.css"
+    />
+    <meta name="color-scheme" content="light" />
+    <script src="https://sandbox.src.mastercard.com/srci/integration/2/lib.js?locale=en_US"></script>
+    <script
+      type="module"
+      src="https://src.mastercard.com/srci/integration/components/src-ui-kit/src-ui-kit.esm.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://src.mastercard.com/srci/integration/components/src-ui-kit/src-ui-kit.css"
+    />
+  </head>
+  <body>
+    <main>
+      <h1>Payment Form</h1>
+      <form
+        id="click-to-pay-form"
+        accept-charset="UTF-8"
+        method="POST"
+        action="#"
+      >
+        <fieldset>
+          <legend>Contact Information</legend>
+          <p>
+            <label for="email">Email Address</label>
+            <input type="text" id="email" />
+          </p>
+          <!-- <p>
+            <label for="phone">Phone</label>
+            <input type="text" id="phone" />
+          </p> -->
+        </fieldset>
+
+        <section id="shipping-details">
+          <fieldset>
+            <legend>Shipping Address</legend>
+            <p>
+              <label for="first_name">First Name</label>
+              <input type="text" id="first_name" value="David" />
+            </p>
+            <p>
+              <label for="last_name">Last Name</label>
+              <input type="text" id="last_name" value="Johnson" />
+            </p>
+            <p>
+              <label for="address_1">Address Line 1</label>
+              <input type="text" id="address_1" value="618 E South St" />
+            </p>
+            <p>
+              <label for="address_2">Address Line 2</label>
+              <input type="text" id="address_2" value="Suite 510" />
+            </p>
+            <p>
+              <label for="address_city">City</label>
+              <input type="text" id="address_city" value="Orlando" />
+            </p>
+            <p>
+              <label for="address_state">State</label>
+              <input type="text" id="address_state" value="FL" />
+            </p>
+            <p>
+              <label for="address_zip">Zip Code</label>
+              <input type="text" id="address_zip" value="32801" />
+            </p>
+            <p>
+              <label for="address_country">Country</label>
+              <input type="text" id="address_country" value="US" />
+            </p>
+          </fieldset>
+        </section>
+        <section id="card-details">
+          <fieldset>
+            <legend>Card Details</legend>
+            <p>
+              <label for="card_number">Card Number</label>
+              <input type="text" id="card_number" value="Orlando" />
+            </p>
+            <p>
+              <label for="card_cvv">Card CVV</label>
+              <input type="text" id="card_cvv" value="123" />
+            </p>
+
+            <p>
+              <label>Expiration Month</label>
+              <input
+                type="text"
+                id="expiration_month"
+                maxlength="2"
+                placeholder="MM"
+                value="01"
+              />
+            </p>
+            <p>
+              <label>Expiration Year</label>
+              <input
+                type="text"
+                id="expiration_year"
+                maxlength="4"
+                placeholder="YYYY"
+                value="2030"
+              />
+            </p>
+          </fieldset>
+        </section>
+
+        <div>
+          <button type="submit" id="submit-button" type="button">Submit</button>
+        </div>
+
+        <div id="c2p-container" style="display: none">
+          <iframe
+            style="visibility: hidden"
+            id="mastercard-ui"
+            name="mastercard-ui"
+          ></iframe>
+          <src-button
+            id="c2p-start-button"
+            ref="c2p-start-button"
+            locale="en_US"
+            width="200"
+            height="40"
+            theme="dark"
+            card-brands="mastercard,visa,discover,amex"
+          ></src-button>
+          <src-otp-channel-selection
+            id="c2p-otp-channel-selection"
+            ref="c2p-otp-channel-selection"
+            locale="en_US"
+            card-brands="mastercard,visa,discover,amex"
+            display-cancel-option="true"
+            display-header="true"
+          ></src-otp-channel-selection>
+          <src-otp-input
+            id="c2p-otp-input"
+            ref="c2p-otp-input"
+            locale="en_US"
+            card-brands="mastercard,visa,discover,amex"
+            display-cancel-option="false"
+            error-reason=""
+            masked-identity-value="+1 (***) ***-*949"
+            network-id="Mastercard"
+            is-successful="false"
+            display-header="true"
+            auto-submit="false"
+            disable-elements="false"
+            hide-loader="false"
+            display-remember-me="false"
+            otp-resend-loading="false"
+          ></src-otp-input>
+          <src-card-list
+            id="c2p-card-list"
+            ref="c2p-card-list"
+            locale="en_US"
+            card-brands="mastercard,visa,discover,amex"
+            display-cancel-option="false"
+            display-add-card="false"
+            display-preferred-card="false"
+            display-sign-out="false"
+            card-selection-type="gridView"
+            src-digital-card-id=""
+            display-header="true"
+            unaccepted-card-type=""
+            background="default"
+          ></src-card-list>
+        </div>
+      </form>
+    </main>
+  </body>
+  <script src="env.js"></script>
+  <script src="index.js"></script>
+</html>
