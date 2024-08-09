@@ -3,98 +3,144 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <meta name="color-scheme" content="light" />
     <title>Mastercard Click to Pay Sample</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <link
       rel="stylesheet"
       href="https://unpkg.com/bamboo.css/dist/light.min.css"
     />
-    <meta name="color-scheme" content="light" />
-    <script src="https://sandbox.src.mastercard.com/srci/integration/2/lib.js?locale=en_US"></script>
-    <script
-      type="module"
-      src="https://src.mastercard.com/srci/integration/components/src-ui-kit/src-ui-kit.esm.js"
-    ></script>
+    <!-- Click to Pay UI Kit -->
     <link
       rel="stylesheet"
       href="https://src.mastercard.com/srci/integration/components/src-ui-kit/src-ui-kit.css"
     />
+    <script
+      type="module"
+      src="https://src.mastercard.com/srci/integration/components/src-ui-kit/src-ui-kit.esm.js"
+    ></script>
+    <!-- Click to Pay SDK -->
+    <script src="https://sandbox.src.mastercard.com/srci/integration/2/lib.js?locale=en_US"></script>
+    <!-- <script src="mastercard.js"></script> -->
   </head>
   <body>
     <main>
       <h1>Payment Form</h1>
-      <form
-        id="click-to-pay-form"
-        accept-charset="UTF-8"
-        method="POST"
-        action="#"
-      >
-        <fieldset>
-          <legend>Contact Information</legend>
-          <p>
-            <label for="email">Email Address</label>
-            <input type="text" id="email" />
-          </p>
-          <!-- <p>
+      <form id="form">
+        <section id="contact_details">
+          <fieldset>
+            <legend>Contact Information</legend>
+            <p>
+              <label for="email">Email Address</label>
+              <input type="text" id="email" name="email" />
+            </p>
+            <!-- <p>
             <label for="phone">Phone</label>
-            <input type="text" id="phone" />
+            <input type="text" id="phone" name="phone" />
           </p> -->
-        </fieldset>
+          </fieldset>
+        </section>
 
-        <section id="shipping-details">
+        <section id="shipping_details">
           <fieldset>
             <legend>Shipping Address</legend>
             <p>
               <label for="first_name">First Name</label>
-              <input type="text" id="first_name" value="David" />
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                value="David"
+              />
             </p>
             <p>
               <label for="last_name">Last Name</label>
-              <input type="text" id="last_name" value="Johnson" />
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                value="Johnson"
+              />
             </p>
             <p>
-              <label for="address_1">Address Line 1</label>
-              <input type="text" id="address_1" value="618 E South St" />
+              <label for="address_line_1">Address Line 1</label>
+              <input
+                type="text"
+                id="address_line_1"
+                name="address_line_1"
+                value="618 E South St"
+              />
             </p>
             <p>
-              <label for="address_2">Address Line 2</label>
-              <input type="text" id="address_2" value="Suite 510" />
+              <label for="address_line_2">Address Line 2</label>
+              <input
+                type="text"
+                id="address_line_2"
+                name="address_line_2"
+                value="Suite 510"
+              />
             </p>
             <p>
               <label for="address_city">City</label>
-              <input type="text" id="address_city" value="Orlando" />
+              <input
+                type="text"
+                id="address_city"
+                name="address_city"
+                value="Orlando"
+              />
             </p>
             <p>
               <label for="address_state">State</label>
-              <input type="text" id="address_state" value="FL" />
+              <input
+                type="text"
+                id="address_state"
+                name="address_state"
+                value="FL"
+              />
             </p>
             <p>
               <label for="address_zip">Zip Code</label>
-              <input type="text" id="address_zip" value="32801" />
+              <input
+                type="text"
+                id="address_zip"
+                name="address_zip"
+                value="32801"
+              />
             </p>
             <p>
               <label for="address_country">Country</label>
-              <input type="text" id="address_country" value="US" />
+              <input
+                type="text"
+                id="address_country"
+                name="address_country"
+                value="US"
+              />
             </p>
           </fieldset>
         </section>
-        <section id="card-details">
+        <section id="card_details">
           <fieldset>
             <legend>Card Details</legend>
             <p>
               <label for="card_number">Card Number</label>
-              <input type="text" id="card_number" value="Orlando" />
+              <input
+                type="text"
+                id="card_number"
+                name="card_number"
+                value="5186001700008785"
+              />
             </p>
             <p>
               <label for="card_cvv">Card CVV</label>
-              <input type="text" id="card_cvv" value="123" />
+              <input type="text" id="card_cvv" name="card_cvv" value="123" />
             </p>
 
             <p>
               <label>Expiration Month</label>
               <input
                 type="text"
-                id="expiration_month"
+                id="card_exp_month"
+                name="card_exp_month"
                 maxlength="2"
                 placeholder="MM"
                 value="01"
@@ -104,7 +150,8 @@
               <label>Expiration Year</label>
               <input
                 type="text"
-                id="expiration_year"
+                id="card_exp_year"
+                name="card_exp_year"
                 maxlength="4"
                 placeholder="YYYY"
                 value="2030"
@@ -114,14 +161,14 @@
         </section>
 
         <div>
-          <button type="submit" id="submit-button" type="button">Submit</button>
+          <button type="submit">Submit</button>
         </div>
 
         <div id="c2p-container" style="display: none">
           <iframe
             style="visibility: hidden"
-            id="mastercard-ui"
-            name="mastercard-ui"
+            id="c2p-modal"
+            name="c2p-modal"
           ></iframe>
           <src-button
             id="c2p-start-button"
@@ -177,5 +224,6 @@
     </main>
   </body>
   <script src="env.js"></script>
+  <script src="utils.js"></script>
   <script src="index.js"></script>
 </html>

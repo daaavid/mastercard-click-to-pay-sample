@@ -4,7 +4,7 @@
   "description": "A sample app for the Mastercard Click to Pay integration",
   "main": "index.js",
   "scripts": {
-    "start": "static .",
+    "start": "static . -p 3030",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
