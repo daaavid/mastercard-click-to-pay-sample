@@ -6,6 +6,7 @@
     <meta name="color-scheme" content="light" />
     <title>Mastercard Click to Pay Sample</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" type="text/css" href="modal.css" />
     <link
       rel="stylesheet"
       href="https://unpkg.com/bamboo.css/dist/light.min.css"
@@ -25,6 +26,10 @@
   </head>
   <body>
     <main>
+      <div id="modal" class="modal">
+        <iframe id="c2p-modal" name="c2p-modal" class="modal-content"></iframe>
+      </div>
+
       <h1>Payment Form</h1>
       <form id="form">
         <section id="contact_details">
@@ -160,16 +165,11 @@
           </fieldset>
         </section>
 
-        <div>
+        <div style="text-align: center">
           <button type="submit">Submit</button>
         </div>
 
-        <div id="c2p-container" style="display: none">
-          <iframe
-            style="visibility: hidden"
-            id="c2p-modal"
-            name="c2p-modal"
-          ></iframe>
+        <!-- <div id="c2p-container">
           <src-button
             id="c2p-start-button"
             ref="c2p-start-button"
@@ -219,11 +219,12 @@
             unaccepted-card-type=""
             background="default"
           ></src-card-list>
-        </div>
+        </div> -->
       </form>
     </main>
   </body>
   <script src="env.js"></script>
   <script src="utils.js"></script>
+  <script src="modal.js"></script>
   <script src="index.js"></script>
 </html>

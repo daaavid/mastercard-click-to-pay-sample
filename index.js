@@ -7,28 +7,21 @@ async function init() {
       srcDpaId: ENV_DPA_ID, // required
       dpaData: {
         dpaName: "Test", // required
-        // dpaPresentationName: "Test",
+        // dpaPresentationName: "Test", // optional
       },
       dpaTransactionOptions: {
         dpaLocale: "en_US", // required
-        // paymentOptions: [
-        //   {
-        //     dynamicDataType: "NONE",
-        //   },
-        // ],
-        // transactionAmount: {
-        //   transactionAmount: 100,
-        //   transactionCurrencyCode: "USD",
-        // },
-        // consumerEmailAddressRequested: true,
-        // consumerPhoneNumberRequested: true,
-        // dpaBillingPreference: "POSTAL_COUNTRY",
-        // dpaLocale: "en_US",
-        // confirmPayment: false,
-        // paymentOptions: [{ dynamicDataType: "NONE" }],
+        // paymentOptions: [{ dynamicDataType: "NONE" }], // optional
+        // transactionAmount: { transactionAmount: 100, transactionCurrencyCode: "USD" }, // optional
+        // consumerEmailAddressRequested: true, // optional
+        // consumerPhoneNumberRequested: true, // optional
+        // dpaBillingPreference: "POSTAL_COUNTRY", // optional
+        // dpaLocale: "en_US", // optional
+        // confirmPayment: false, // optional
+        // paymentOptions: [{ dynamicDataType: "NONE" }], // optional
       },
       cardBrands: ["mastercard", "visa", "amex", "discover"], // required
-      // checkoutExperience: "WITHIN_CHECKOUT",
+      checkoutExperience: "WITHIN_CHECKOUT", // optional
     });
 
     const cardsResult = await click2payInstance.getCards();
@@ -173,11 +166,15 @@ async function onFormSubmit(e) {
   //    }
   // }
 
+  const modal = document.getElementById("modal");
+  modal.classList.add("open");
+
   const checkoutWithNewCardResult = await click2payInstance.checkoutWithNewCard(
     {
       encryptedCard,
       cardBrand,
       // windowRef: document.getElementById("c2p-modal").contentWindow,
+      windowRef: document.querySelector("#c2p-modal").contentWindow,
       dpaTransactionOptions: {
         dpaLocale: "en_US",
       },
@@ -201,9 +198,17 @@ async function onFormSubmit(e) {
 
 // Simulate email field value change for testing
 setTimeout(() => {
-  emailField.value = ENV_EMAIL;
+  // from env.js (gitignored)
+  // emailField.value = ENV_EMAIL;
+
+  // has click to pay user
+  // emailField.value = "test@test.com";
+
+  // does not have click to pay user (probably)
+  emailField.value = `test+${crypto.randomUUID().slice(0, 8)}@test.com`;
+
   const event = new Event("input", { bubbles: true });
   emailField.dispatchEvent(event);
-}, 2000);
+}, 1000);
 
 init();
