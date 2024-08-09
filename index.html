@@ -31,145 +31,160 @@
       </div>
 
       <h1>Payment Form</h1>
+
       <form id="form">
-        <section id="contact_details">
-          <fieldset>
-            <legend>Contact Information</legend>
-            <p>
-              <label for="email">Email Address</label>
-              <input type="text" id="email" name="email" />
-            </p>
-            <!-- <p>
-            <label for="phone">Phone</label>
-            <input type="text" id="phone" name="phone" />
-          </p> -->
-          </fieldset>
-        </section>
+        <div class="row">
+          <div class="column">
+            <section id="contact_details">
+              <fieldset>
+                <legend>Contact Information</legend>
+                <p>
+                  <label for="email">Email Address</label>
+                  <input type="text" id="email" name="email" />
+                </p>
+                <p>
+                  <label for="phone">Phone</label>
+                  <input
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    disabled
+                    aria-disabled="true"
+                    placeholder="disabled"
+                  />
+                </p>
+              </fieldset>
+            </section>
 
-        <section id="shipping_details">
-          <fieldset>
-            <legend>Shipping Address</legend>
-            <p>
-              <label for="first_name">First Name</label>
-              <input
-                type="text"
-                id="first_name"
-                name="first_name"
-                value="David"
-              />
-            </p>
-            <p>
-              <label for="last_name">Last Name</label>
-              <input
-                type="text"
-                id="last_name"
-                name="last_name"
-                value="Johnson"
-              />
-            </p>
-            <p>
-              <label for="address_line_1">Address Line 1</label>
-              <input
-                type="text"
-                id="address_line_1"
-                name="address_line_1"
-                value="618 E South St"
-              />
-            </p>
-            <p>
-              <label for="address_line_2">Address Line 2</label>
-              <input
-                type="text"
-                id="address_line_2"
-                name="address_line_2"
-                value="Suite 510"
-              />
-            </p>
-            <p>
-              <label for="address_city">City</label>
-              <input
-                type="text"
-                id="address_city"
-                name="address_city"
-                value="Orlando"
-              />
-            </p>
-            <p>
-              <label for="address_state">State</label>
-              <input
-                type="text"
-                id="address_state"
-                name="address_state"
-                value="FL"
-              />
-            </p>
-            <p>
-              <label for="address_zip">Zip Code</label>
-              <input
-                type="text"
-                id="address_zip"
-                name="address_zip"
-                value="32801"
-              />
-            </p>
-            <p>
-              <label for="address_country">Country</label>
-              <input
-                type="text"
-                id="address_country"
-                name="address_country"
-                value="US"
-              />
-            </p>
-          </fieldset>
-        </section>
-        <section id="card_details">
-          <fieldset>
-            <legend>Card Details</legend>
-            <p>
-              <label for="card_number">Card Number</label>
-              <input
-                type="text"
-                id="card_number"
-                name="card_number"
-                value="5186001700008785"
-              />
-            </p>
-            <p>
-              <label for="card_cvv">Card CVV</label>
-              <input type="text" id="card_cvv" name="card_cvv" value="123" />
-            </p>
+            <section id="card_details">
+              <fieldset>
+                <legend>Card Details</legend>
+                <p>
+                  <label for="card_number">Card Number</label>
+                  <input
+                    type="text"
+                    id="card_number"
+                    name="card_number"
+                    value="5186001700008785"
+                  />
+                </p>
+                <p>
+                  <label for="card_cvv">Card CVV</label>
+                  <input
+                    type="text"
+                    id="card_cvv"
+                    name="card_cvv"
+                    value="123"
+                  />
+                </p>
 
-            <p>
-              <label>Expiration Month</label>
-              <input
-                type="text"
-                id="card_exp_month"
-                name="card_exp_month"
-                maxlength="2"
-                placeholder="MM"
-                value="01"
-              />
-            </p>
-            <p>
-              <label>Expiration Year</label>
-              <input
-                type="text"
-                id="card_exp_year"
-                name="card_exp_year"
-                maxlength="4"
-                placeholder="YYYY"
-                value="2030"
-              />
-            </p>
-          </fieldset>
-        </section>
+                <p>
+                  <label>Expiration Month</label>
+                  <input
+                    type="text"
+                    id="card_exp_month"
+                    name="card_exp_month"
+                    maxlength="2"
+                    placeholder="MM"
+                    value="01"
+                  />
+                </p>
+                <p>
+                  <label>Expiration Year</label>
+                  <input
+                    type="text"
+                    id="card_exp_year"
+                    name="card_exp_year"
+                    maxlength="4"
+                    placeholder="YYYY"
+                    value="2030"
+                  />
+                </p>
+              </fieldset>
+            </section>
+          </div>
 
-        <div style="text-align: center">
-          <button type="submit">Submit</button>
-        </div>
+          <div class="column">
+            <section id="shipping_details">
+              <fieldset>
+                <legend>Shipping Address</legend>
+                <p>
+                  <label for="first_name">First Name</label>
+                  <input
+                    type="text"
+                    id="first_name"
+                    name="first_name"
+                    value="David"
+                  />
+                </p>
+                <p>
+                  <label for="last_name">Last Name</label>
+                  <input
+                    type="text"
+                    id="last_name"
+                    name="last_name"
+                    value="Johnson"
+                  />
+                </p>
+                <p>
+                  <label for="address_line_1">Address Line 1</label>
+                  <input
+                    type="text"
+                    id="address_line_1"
+                    name="address_line_1"
+                    value="618 E South St"
+                  />
+                </p>
+                <p>
+                  <label for="address_line_2">Address Line 2</label>
+                  <input
+                    type="text"
+                    id="address_line_2"
+                    name="address_line_2"
+                    value="Suite 510"
+                  />
+                </p>
+                <p>
+                  <label for="address_city">City</label>
+                  <input
+                    type="text"
+                    id="address_city"
+                    name="address_city"
+                    value="Orlando"
+                  />
+                </p>
+                <p>
+                  <label for="address_state">State</label>
+                  <input
+                    type="text"
+                    id="address_state"
+                    name="address_state"
+                    value="FL"
+                  />
+                </p>
+                <p>
+                  <label for="address_zip">Zip Code</label>
+                  <input
+                    type="text"
+                    id="address_zip"
+                    name="address_zip"
+                    value="32801"
+                  />
+                </p>
+                <p>
+                  <label for="address_country">Country</label>
+                  <input
+                    type="text"
+                    id="address_country"
+                    name="address_country"
+                    value="US"
+                  />
+                </p>
+              </fieldset>
+            </section>
+          </div>
 
-        <!-- <div id="c2p-container">
+          <!-- <div id="c2p-container">
           <src-button
             id="c2p-start-button"
             ref="c2p-start-button"
@@ -220,6 +235,11 @@
             background="default"
           ></src-card-list>
         </div> -->
+        </div>
+
+        <div style="text-align: center">
+          <button type="submit">Submit</button>
+        </div>
       </form>
     </main>
   </body>

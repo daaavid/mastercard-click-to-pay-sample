@@ -1,3 +1,27 @@
 form {
     padding: 32px 0px;
 }
+
+body {
+    max-width: 100ch !important;
+}
+
+h1 {
+    text-align: center;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 16px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+}
+
