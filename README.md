@@ -1,3 +1,7 @@
+## Description:
+
+This is a simple application demonstrating how to use the Mastercard Click to Pay SDK.
+
 ## Prerequisites:
 
 Create a env.js file:
@@ -23,3 +27,7 @@ npm install
 ```
 npm run start
 ```
+
+## Notes:
+
+Any changes to the code will require a hard refresh (cmd+shift+R) of the page to see the changes.
