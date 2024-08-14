@@ -21,8 +21,8 @@
     /* modal */
     position: relative;
     background: #fff;
-    height: 252px;
-    width: 353px;
+    width: 480px;
+    height: 800px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -31,4 +31,5 @@
     text-align: center;
     border-radius: 8px;
     box-shadow: 0.1rem 0.1rem 0.4rem 0.2rem rgba(0, 0, 0, 0.2);
+    transition: opacity linear .2s;
 }
