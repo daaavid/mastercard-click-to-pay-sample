@@ -77,72 +77,75 @@ async function onEmailFieldInput(e) {
 const form = document.getElementById("form");
 form.addEventListener("submit", onFormSubmit);
 
-async function onFormSubmit(e) {
+function onFormSubmit(e) {
   e.preventDefault();
 
-  /////////////////////////////////////
-  // First, encrypt the card details //
-  /////////////////////////////////////
+  /**
+   * First, encrypt the card details by sending a 'inputFieldUpdate'
+   * message that includes the card metadata to the cardx hosted field iframe.
+   *
+   * This will trigger the cardx hosted field to encrypt the card details with
+   * the Click to Pay SDK and send window message with an author of 'cardx_hosted_card_field'
+   * and a message that includes the encrypted card and card brand.
+   *
+   * Once we have those details, we can use the encrypted card to check out.
+   */
 
-  // Request
-  // encryptCard({
-  //   required String primaryAccountNumber;
-  //   required String panExpirationMonth;
-  //   required String panExpirationYear;
-  //   required String cardSecurityCode;
-  //   optional String cardholderFirstName;
-  //   optional String cardholderLastName;
-  //   optional String billingAddress: {
-  //       optional String name;
-  //       optional String line1;
-  //       optional String line2;
-  //       optional String line3;
-  //       optional String city;
-  //       optional String state;
-  //       optional String zip;
-  //       optional String countryCode;
-  //     }
-  //  })
+  const formData = new FormData(e.target);
+  const formValues = Object.fromEntries(formData.entries());
+  const {
+    address_zip,
+    address_line_1,
+    address_line_2,
+    address_city,
+    address_state,
+    first_name,
+    last_name,
+    card_cvv,
+    card_exp_month,
+    card_exp_year,
+  } = formValues;
 
-  // Response
-  // {
-  //   required String <JWE> encryptedCard;
-  //   required String cardBrand;
-  // }
-
-  try {
-    const formData = new FormData(e.target);
-    const formValues = Object.fromEntries(formData.entries());
-    const encryptCardPayload = {
-      primaryAccountNumber: formValues.card_number,
-      panExpirationMonth: formValues.card_exp_month,
-      panExpirationYear: formValues.card_exp_year.slice(-2),
-      cardSecurityCode: formValues.card_cvv,
-      cardholderFirstName: formValues.first_name,
-      cardholderLastName: formValues.last_name,
-      billingAddress: {
-        name: `${formValues.first_name} ${formValues.last_name}`,
-        line1: formValues.address_line_1,
-        line2: formValues.address_line_2,
-        city: formValues.address_city,
-        state: formValues.address_state,
-        zip: formValues.address_zip,
-        countryCode: formValues.address_country,
+  const cardXHostedFieldContentWindow =
+    document.getElementById("hosted-card-field").contentWindow;
+  cardXHostedFieldContentWindow.postMessage(
+    {
+      messageAuthor: "cardx_card_field_update",
+      message: {
+        updateType: "inputFieldUpdate",
+        updateObject: {
+          zip: address_zip,
+          address: (address_line_1 + " " + address_line_2).trim(),
+          city: address_city,
+          state: address_state,
+          name: `${first_name} ${last_name}`,
+          cvv: card_cvv,
+          expDate01: `${card_exp_month}/${card_exp_year.slice(-2)}`,
+          email: "",
+          clickToPayEnabled: true,
+        },
       },
-    };
+    },
+    "*"
+  );
+}
 
-    const encryptedCardResult = await click2payInstance.encryptCard(
-      encryptCardPayload
-    );
-    const encryptedCard = encryptedCardResult.encryptedCard;
-    const cardBrand = encryptedCardResult.cardBrand;
+window.addEventListener("message", (event) => {
+  if (event.data.messageAuthor !== "cardx_hosted_card_field") return;
+  const message = event.data.message;
 
-    console.log({ encryptedCard, cardBrand });
+  if (message.encryptedCard) {
+    /**
+     * Once the cardx hosted field iframe sends a message with the encrypted card,
+     * we can use the encrypted card to check out.
+     */
+    console.log("Encrypted card:", message.encryptedCard);
+    onReceiveEncryptedCard(message.encryptedCard, message.cardBrand);
+  }
+});
 
-    ///////////////////////////////////////////////
-    // Next, use the encrypted card to check out //
-    ///////////////////////////////////////////////
-
+async function onReceiveEncryptedCard(encryptedCard, cardBrand) {
+  try {
     // Request
     // checkoutWithNewCard ({
     //    required String <JWE> encryptedCard;
@@ -207,9 +210,7 @@ async function onFormSubmit(e) {
         cardBrand,
         windowRef: document.getElementById("c2p-modal").contentWindow,
         // windowRef: document.querySelector("#c2p-modal").contentWindow,
-        dpaTransactionOptions: {
-          dpaLocale: "en_US",
-        },
+        dpaTransactionOptions: { dpaLocale: "en_US" },
       });
 
     const checkoutActionCode = checkoutWithNewCardResult.checkoutActionCode;

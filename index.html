@@ -61,12 +61,18 @@
                 <legend>Card Details</legend>
                 <p>
                   <label for="card_number">Card Number</label>
-                  <input
-                    type="text"
-                    id="card_number"
-                    name="card_number"
-                    value="5186001700008785"
-                  />
+                  <iframe
+                    id="hosted-card-field"
+                    src="https://sandbox.api.lightbox.cardx.com/v1/redirect?&amount=100&account=cardxptest&mode=payment&token=&maskedNumber=&sessionID=4f31e7e8-ee13-4229-b929-c6967c002dd8&preferCardxPricing=true&gateway=PnP"
+                    style="
+                      margin: 0;
+                      border: 0;
+                      border-radius: 4px;
+                      width: 100%;
+                      height: 40px;
+                      background: #eceff4;
+                    "
+                  ></iframe>
                 </p>
                 <p>
                   <label for="card_cvv">Card CVV</label>
