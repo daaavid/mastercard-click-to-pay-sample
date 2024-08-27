@@ -1,9 +1,12 @@
-let click2payInstance;
+let c2pInstance;
+let c2pOtp = "";
+let c2pAvailableCardBrands = [];
+let c2pSavedCards = [];
 
 async function init() {
   try {
-    click2payInstance = new Click2Pay();
-    const initResponse = await click2payInstance.init({
+    c2pInstance = new Click2Pay();
+    const initResponse = await c2pInstance.init({
       srcDpaId: ENV_DPA_ID, // required
       dpaData: {
         dpaName: "Test", // required
@@ -20,16 +23,31 @@ async function init() {
         // confirmPayment: false, // optional
         // paymentOptions: [{ dynamicDataType: "NONE" }], // optional
       },
-      cardBrands: ["mastercard", "visa", "amex", "discover"], // required
+      // cardBrands: ["mastercard", "visa", "amex", "discover"], // required
+      cardBrands: ["mastercard", "amex", "discover"], // required
       checkoutExperience: "WITHIN_CHECKOUT", // optional
     });
     console.log({ initResponse });
 
-    const cardsResult = await click2payInstance.getCards();
+    c2pAvailableCardBrands = initResponse.availableCardBrands;
+
+    const cardsResult = await c2pInstance.getCards();
     console.log({ cardsResult });
   } catch (error) {
     console.log(error);
   }
+}
+
+function resetClasses() {
+  const c2pOtpContainer = document.getElementById("c2p-otp-container");
+  const modal = document.getElementById("modal");
+  const c2pIframe = document.getElementById("c2p-iframe");
+  const savedCardsSection = document.getElementById("saved_cards");
+
+  c2pOtpContainer.classList.add("hidden");
+  modal.classList.remove("open");
+  c2pIframe.classList.add("hidden");
+  savedCardsSection.classList.add("hidden");
 }
 
 function redirectFromLocalhost() {
@@ -52,23 +70,79 @@ emailField.addEventListener("input", debounce(onEmailFieldInput, 500));
 async function onEmailFieldInput(e) {
   try {
     const email = e.target.value;
-    const r = await click2payInstance.idLookup({ email });
-
-    const click2payUserExists = r.consumerPresent;
+    const idLookupResult = await c2pInstance.idLookup({ email });
+    console.log({ idLookupResult });
+    const click2payUserExists = idLookupResult.consumerPresent;
     console.log(
       click2payUserExists
         ? `Click to Pay user for ${email} exists`
         : `Click to Pay user for ${email} does not exist`
     );
 
-    if (click2payUserExists) {
-      const shippingDetailsSection =
-        document.getElementById("shipping_details");
-      const cardDetailsSection = document.getElementById("card_details");
+    const c2pOtpContainer = document.getElementById("c2p-otp-container");
+    const modal = document.getElementById("modal");
 
-      shippingDetailsSection.style.display = "none";
-      cardDetailsSection.style.display = "none";
+    if (!click2payUserExists) {
+      console.log("hiding c2pOtpContainer");
+      modal.classList.remove("open");
+      c2pOtpContainer.classList.add("hidden");
+      savedCardsSection.classList.add("hidden");
+      return;
     }
+
+    const initiateValidationResult = await c2pInstance.initiateValidation();
+    console.log({ initiateValidationResult });
+    const { maskedValidationChannel, network } = initiateValidationResult;
+
+    const c2pOtpInput = document.getElementById("c2p-otp-input");
+    c2pOtpInput.setAttribute("masked-identity-value", maskedValidationChannel);
+    c2pOtpInput.setAttribute("network-id", network);
+    c2pOtpInput.setAttribute("card-brands", c2pAvailableCardBrands.join(","));
+
+    const c2pCardList = document.getElementById("c2p-card-list");
+    c2pCardList.setAttribute("card-brands", c2pAvailableCardBrands.join(","));
+
+    c2pOtpContainer.classList.remove("hidden");
+    modal.classList.add("open");
+
+    c2pOtpInput.addEventListener("otpChanged", function ({ detail }) {
+      console.log("otpChanged:", detail);
+      c2pOtp = detail;
+    });
+    c2pOtpInput.addEventListener("continue", async function () {
+      // TODO: Display a loader
+      console.log(
+        "user has clicked continue or has otherwise finished entering OTP"
+      );
+
+      c2pSavedCards = [];
+
+      try {
+        const validateResponse = await c2pInstance.validate({
+          value: c2pOtp,
+        });
+
+        console.log({ validateResponse });
+
+        // TODO: add success attribute to c2p-otp-input and then close the modal
+
+        c2pSavedCards = validateResponse;
+      } catch (error) {
+        // TODO: add error attribute to c2p-otp-input
+        return;
+      }
+
+      const savedCardsSection = document.getElementById("saved_cards");
+      savedCardsSection.classList.remove("hidden");
+    });
+    c2pOtpInput.addEventListener("alternateRequested", function () {
+      console.log("user requested alternate payment method");
+    });
+    c2pOtpInput.addEventListener("close", function () {
+      console.log("user requested to close the modal");
+
+      modal.classList.remove("open");
+    });
   } catch (error) {
     console.log(error);
   }
@@ -131,7 +205,7 @@ async function onFormSubmit(e) {
       },
     };
 
-    const encryptedCardResult = await click2payInstance.encryptCard(
+    const encryptedCardResult = await c2pInstance.encryptCard(
       encryptCardPayload
     );
     const encryptedCard = encryptedCardResult.encryptedCard;
@@ -181,6 +255,12 @@ async function onFormSubmit(e) {
     //    }
     // }
 
+    const c2pIframe = document.getElementById("c2p-iframe");
+    c2pIframe.classList.remove("hidden");
+
+    const c2pOtpContainer = document.getElementById("c2p-otp-container");
+    c2pOtpContainer.classList.add("hidden");
+
     const modal = document.getElementById("modal");
     modal.classList.add("open");
 
@@ -200,17 +280,13 @@ async function onFormSubmit(e) {
      * });
      * ```
      */
-
-    const checkoutWithNewCardResult =
-      await click2payInstance.checkoutWithNewCard({
-        encryptedCard,
-        cardBrand,
-        windowRef: document.getElementById("c2p-modal").contentWindow,
-        // windowRef: document.querySelector("#c2p-modal").contentWindow,
-        dpaTransactionOptions: {
-          dpaLocale: "en_US",
-        },
-      });
+    const checkoutWithNewCardResult = await c2pInstance.checkoutWithNewCard({
+      encryptedCard: encryptedCard,
+      cardBrand: cardBrand,
+      windowRef: document.getElementById("c2p-iframe").contentWindow,
+      // windowRef: document.querySelector("#c2p-iframe").contentWindow,
+      dpaTransactionOptions: { dpaLocale: "en_US" },
+    });
 
     const checkoutActionCode = checkoutWithNewCardResult.checkoutActionCode;
     const checkoutResponse = checkoutWithNewCardResult.checkoutResponse;
@@ -234,13 +310,16 @@ async function onFormSubmit(e) {
 setTimeout(() => {
   // has click to pay user
   // emailField.value = "test@test.com";
-
   // does not have click to pay user (probably)
-  emailField.value = `test+${crypto.randomUUID().slice(0, 8)}@test.com`;
-
-  const event = new Event("input", { bubbles: true });
-  emailField.dispatchEvent(event);
+  // emailField.value = `test${crypto.randomUUID().slice(0, 8)}@test.com`;
+  // emailField.value = "david@staxpayments.com";
+  // const event = new Event("input", { bubbles: true });
+  // emailField.dispatchEvent(event);
 }, 1000);
+
+window.addEventListener("message", (event) => {
+  // console.log("event", event);
+});
 
 redirectFromLocalhost();
 init();
