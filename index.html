@@ -183,7 +183,20 @@
               </fieldset>
             </section>
           </div>
-
+            <!-- <src-card-list id="srcCardList" locale="en_US" card-brands="" display-cancel-option="false" display-add-card="false" display-preferred-card="false" display-sign-out="false" card-selection-type="gridView" src-digital-card-id="" display-header="true" unaccepted-card-type="" background="default" >
+              <src-card></src-card>
+            </src-card-list> -->
+            <div id="c2p-container">
+              <src-button
+              id="c2p-start-button"
+              ref="c2p-start-button"
+              locale="en_US"
+              width="200"
+              height="40"
+              theme="dark"
+              card-brands="mastercard,visa,discover,amex"
+            ></src-button>
+            </div>
           <!-- <div id="c2p-container">
           <src-button
             id="c2p-start-button"
@@ -235,6 +248,20 @@
             background="default"
           ></src-card-list>
         </div> -->
+        ></src-otp-input>
+        <src-card-list
+          id="src-card-list"
+          ref="c2p-card-list"
+          locale="en_US"
+          display-cancel-option="false"
+          display-add-card="true"
+          display-preferred-card="false"
+          display-sign-out="false"
+          card-selection-type="gridView"
+          src-digital-card-id=""
+          display-header="true"
+          background="default"
+        ></src-card-list>
         </div>
 
         <div style="text-align: center">
