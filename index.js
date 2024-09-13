@@ -2,6 +2,7 @@ let c2pInstance;
 let c2pOtp = "";
 let c2pAvailableCardBrands = [];
 let c2pSavedCards = [];
+let c2pSelectedCard = null;
 
 async function init() {
   try {
@@ -80,6 +81,7 @@ async function onEmailFieldInput(e) {
     );
 
     const c2pOtpContainer = document.getElementById("c2p-otp-container");
+    const savedCardsSection = document.getElementById("saved_cards");
     const modal = document.getElementById("modal");
 
     if (!click2payUserExists) {
@@ -115,6 +117,8 @@ async function onEmailFieldInput(e) {
         "user has clicked continue or has otherwise finished entering OTP"
       );
 
+      c2pOtpInput.setAttribute("disable-elements", true);
+
       c2pSavedCards = [];
 
       try {
@@ -125,10 +129,18 @@ async function onEmailFieldInput(e) {
         console.log({ validateResponse });
 
         // TODO: add success attribute to c2p-otp-input and then close the modal
+        c2pOtpInput.setAttribute("disable-elements", false);
+        c2pOtpInput.setAttribute("is-successful", true);
 
         c2pSavedCards = validateResponse;
+        const cardList = document.getElementById("c2p-card-list");
+        cardList.loadCards(c2pSavedCards);
+
+        modal.classList.remove("open");
       } catch (error) {
         // TODO: add error attribute to c2p-otp-input
+        c2pOtpInput.setAttribute("is-successful", false);
+        c2pOtpInput.setAttribute("error-reason", error);
         return;
       }
 
@@ -140,7 +152,8 @@ async function onEmailFieldInput(e) {
     });
     c2pOtpInput.addEventListener("close", function () {
       console.log("user requested to close the modal");
-
+      c2pOtpInput.removeAttribute("is-successful");
+      c2pOtpInput.removeAttribute("disable-elements");
       modal.classList.remove("open");
     });
   } catch (error) {
@@ -304,6 +317,134 @@ async function onFormSubmit(e) {
   } catch (error) {
     console.log(error);
   }
+}
+
+const c2pCardList = document.getElementById("c2p-card-list");
+c2pCardList.addEventListener("selectSrcDigitalCardId", async function (e) {
+  const newCardSection = document.getElementById("card_details");
+  newCardSection.classList.add("hidden");
+
+  const selectedCardId = e.detail;
+  const selectedCard = c2pSavedCards.find(
+    (card) => card.srcDigitalCardId === selectedCardId
+  );
+
+  const c2pCard = document.getElementById("c2p-card");
+  c2pCard.setAttribute("card-art", selectedCard.digitalCardData.artUri);
+  c2pCard.setAttribute(
+    "descriptor-name",
+    selectedCard.digitalCardData.descriptorName
+  );
+  c2pCard.setAttribute("account-number-suffix", selectedCard.panLastFour);
+  c2pCard.setAttribute("card-status", selectedCard.digitalCardData.status);
+
+  const c2pSubmitSavedCardContainer = document.getElementById(
+    "c2p-submit-saved-card-container"
+  );
+  c2pSubmitSavedCardContainer.classList.remove("hidden");
+
+  const c2pOtpContainer = document.getElementById("c2p-otp-container");
+  c2pOtpContainer.classList.add("hidden");
+
+  const c2pIframe = document.getElementById("c2p-iframe");
+  c2pIframe.classList.add("hidden");
+
+  const modal = document.getElementById("modal");
+  modal.classList.add("open");
+
+  const c2pSubmitSavedCardSubmitButton = document.getElementById(
+    "c2p-submit-saved-card-submit"
+  );
+  c2pSubmitSavedCardSubmitButton.addEventListener("click", function () {
+    c2pSubmitSavedCardContainer.classList.add("hidden");
+    c2pSelectedCard = selectedCard;
+    onSavedCardSubmit();
+  });
+
+  //   {
+  //   "digitalCardData": {
+  //     "artUri": "https://sbx.src.apis.discover.com/sdk/v1.1/resource/30809244-1529-46af-a01e-bb4139d1e1a7",
+  //     "descriptorName": "Discover it®",
+  //     "status": "ACTIVE"
+  //   },
+  //   "maskedBillingAddress": {
+  //     "city": "Lincolnshire",
+  //     "countryCode": "US",
+  //     "line1": "2*** L*** C*** R***",
+  //     "line2": "2*** L*** C*** R*** 2",
+  //     "line3": "2*** L*** C*** R*** 3",
+  //     "state": "IL",
+  //     "zip": "60015"
+  //   },
+  //   "panBin": "601120",
+  //   "panExpirationMonth": "11",
+  //   "panExpirationYear": "2025",
+  //   "panLastFour": "1714",
+  //   "paymentCardDescriptor": "discover",
+  //   "paymentCardType": "Credit",
+  //   "srcDigitalCardId": "1ee0c10a-5153-4858-b026-79c27d4e58f6",
+  //   "cardholderFirstName": "da**d",
+  //   "cardholderLastName": "jo****n",
+  //   "cardholderFullName": "da**d jo****n"
+  // }
+});
+
+async function onSavedCardSubmit(e) {
+  const selectedCard = c2pSelectedCard;
+
+  const c2pIframe = document.getElementById("c2p-iframe");
+  c2pIframe.classList.remove("hidden");
+
+  const c2pOtpContainer = document.getElementById("c2p-otp-container");
+  c2pOtpContainer.classList.add("hidden");
+
+  const modal = document.getElementById("modal");
+  modal.classList.add("open");
+
+  // checkoutWithCard({
+  // required String srcDigitalCardId;
+  // required Object windowRef;
+  // optional Object complianceSettings;
+  // optional DpaTransactionOptions dpaTransactionOptions : {
+  //   optional AuthenticationPreferences authenticationPreferences;
+  //   optional TransactionAmount transactionAmount;
+  //   optional String dpaBillingPreference;
+  //   optional Array<String> dpaAcceptedBillingCountries;
+  //   optional Boolean consumerEmailAddressRequested;
+  //   optional Boolean consumerPhoneNumberRequested;
+  //   optional String merchantCategoryCode;
+  //   optional String merchantCountryCode;
+  //   optional String <UUID> merchantOrderId;
+  //   optional String threeDsPreference;
+  //   optional Array<PaymentOptions> paymentOptions;
+  //   required String dpaLocale;
+  //   optional String orderType;
+  //   optional Boolean confirmPayment;
+  // };
+  // optional Boolean rememberMe;
+  // })
+
+  console.log(selectedCard);
+
+  const checkoutWithSavedCard = await c2pInstance.checkoutWithNewCard({
+    srcDigitalCardId: selectedCard.srcDigitalCardId,
+    windowRef: document.getElementById("c2p-iframe").contentWindow,
+    dpaTransactionOptions: { dpaLocale: "en_US" },
+  });
+
+  const checkoutActionCode = checkoutWithSavedCard.checkoutActionCode;
+  const checkoutResponse = checkoutWithSavedCard.checkoutResponse;
+  const idToken = checkoutWithSavedCard.idToken;
+  const network = checkoutWithSavedCard.network;
+  const headers = checkoutWithSavedCard.headers;
+
+  console.log({
+    checkoutActionCode,
+    checkoutResponse,
+    idToken,
+    network,
+    headers,
+  });
 }
 
 // Simulate email field value change for testing

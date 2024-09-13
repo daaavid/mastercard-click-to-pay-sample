@@ -38,7 +38,6 @@
             The network-id, card-brands, and masked-identity-value attributes
             have dynamic values that will be set by our javascript code.
           -->
-          <src-loader locale="en_US"></src-loader>
           <src-otp-input
             id="c2p-otp-input"
             ref="c2p-otp-input"
@@ -54,6 +53,25 @@
             display-remember-me="true"
             otp-resend-loading="false"
           ></src-otp-input>
+          <!-- <src-loader locale="en_US" class="hidden"></src-loader> -->
+        </div>
+        <div
+          id="c2p-submit-saved-card-container"
+          class="modal-content hidden"
+          style="padding: 16px"
+        >
+          <src-card
+            id="c2p-card"
+            card-art=""
+            descriptor-name="Citi"
+            account-number-suffix="1234"
+            card-status="ACTIVE"
+            locale="en_US"
+          >
+          </src-card>
+          <div style="text-align: center">
+            <button id="c2p-submit-saved-card-submit" type="">Submit</button>
+          </div>
         </div>
       </div>
 
@@ -90,7 +108,7 @@
                   locale="en_US"
                   card-brands=""
                   display-cancel-option="false"
-                  display-add-card="true"
+                  display-add-card="false"
                   display-preferred-card="false"
                   display-sign-out="true"
                   card-selection-type="gridView"
